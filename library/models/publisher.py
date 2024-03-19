@@ -2,4 +2,4 @@ from django.db import models
 
 
 class Publisher(models.Model):
-    name = models.CharField(max_length=5000)
+    name = models.CharField(max_length=500, unique=True)
