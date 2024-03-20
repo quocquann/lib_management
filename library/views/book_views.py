@@ -1,35 +1,37 @@
-from rest_framework.response import Response
 from rest_framework.generics import RetrieveAPIView
-from rest_framework.views import APIView
-from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework import filters
-from rest_framework.pagination import PageNumberPagination
-from drf_spectacular.utils import extend_schema
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from ..models import Book
-from ..serializers import BookResponseSerializer, BookRequestSerilizer
+from ..serializers import BookResponseSerializer
 
 
-class ListCreateBook(APIView, PageNumberPagination):
+class ListBook(ListAPIView):
 
-    @extend_schema(responses=BookResponseSerializer)
-    def get(self, request):
-        books = Book.objects.all()
-        result = self.paginate_queryset(books, request)
-        serializer = BookResponseSerializer(result, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        serializer = BookRequestSerilizer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class RetrieveBook(RetrieveAPIView):
-    
     serializer_class = BookResponseSerializer
     queryset = Book.objects.all()
-    
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filterset_fields = ["author", "genre", "publisher"]
+    search_fields = ["title", "author__name", "genre__name", "publisher__name"]
+
+    @extend_schema(
+        responses=BookResponseSerializer,
+        parameters=[
+            OpenApiParameter(name="author", type=str, required=False),
+            OpenApiParameter(name="genre", type=str, required=False),
+            OpenApiParameter(name="publisher", type=str, required=False),
+        ],
+    )
+    def get(self, request):
+        return super().get(self, request)
+
+
+class RetrieveBook(RetrieveAPIView):
+
+    serializer_class = BookResponseSerializer
+    queryset = Book.objects.all()
+
     @extend_schema(
         responses=BookResponseSerializer
     )

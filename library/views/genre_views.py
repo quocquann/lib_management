@@ -1,17 +1,16 @@
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 from drf_spectacular.utils import extend_schema
 from ..models import Genre
 from ..serializers import GenreResposneSerialize
 
-class ListCreateGenre(APIView):
-    
+
+class ListGenre(ListAPIView):
+
+    serializer_class = GenreResposneSerialize
+    queryset = Genre.objects.all()
+
     @extend_schema(
         responses=GenreResposneSerialize
     )
     def get(self, request):
-        genres = Genre.objects.all()
-        serializer = GenreResposneSerialize(genres, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-        
+        return super().get(self, request)

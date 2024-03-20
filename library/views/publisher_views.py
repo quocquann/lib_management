@@ -1,13 +1,14 @@
-from rest_framework.views import APIView
-from rest_framework import status
-from rest_framework.response import Response
+from rest_framework.generics import ListAPIView
 from drf_spectacular.utils import extend_schema
 from ..serializers import PublisherResponseSerializer
 from ..models import Publisher
 
-class ListCreatePublisher(APIView):
-    
+
+class ListPublisher(ListAPIView):
+
+    serializer_class = PublisherResponseSerializer
+    queryset = Publisher.objects.all()
+
+    @extend_schema(responses=PublisherResponseSerializer)
     def get(self, request):
-        publishers = Publisher.objects.all()
-        serializer = PublisherResponseSerializer(publishers, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return super().get(self, request)
