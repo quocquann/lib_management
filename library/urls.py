@@ -17,5 +17,8 @@ urlpatterns = [
     path("auth/login", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
     path("books/", views.ListCreateBook.as_view()),
-    path("books/<int:pk>/", views.RetrieveBook.as_view())
+    path("books/<int:pk>/", views.RetrieveBook.as_view()),
+    path("authors/", views.ListCreateAuthor.as_view()),
+    path("genres/", views.ListCreateGenre.as_view()),
+    path("publishers/", views.ListCreatePublisher.as_view())
 ]

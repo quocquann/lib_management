@@ -1,19 +1,21 @@
 from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView, RetrieveAPIView
+from rest_framework.generics import RetrieveAPIView
 from rest_framework.views import APIView
 from rest_framework import status
+from rest_framework import filters
+from rest_framework.pagination import PageNumberPagination
 from drf_spectacular.utils import extend_schema
 from ..models import Book
 from ..serializers import BookResponseSerializer, BookRequestSerilizer
 
 
-class ListCreateBook(APIView):
-    # serializer_class = BookResponseSerializer
+class ListCreateBook(APIView, PageNumberPagination):
 
     @extend_schema(responses=BookResponseSerializer)
     def get(self, request):
         books = Book.objects.all()
-        serializer = BookResponseSerializer(books, many=True)
+        result = self.paginate_queryset(books, request)
+        serializer = BookResponseSerializer(result, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request):
