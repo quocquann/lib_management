@@ -1,6 +1,7 @@
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.generics import ListAPIView
 from rest_framework import filters
+from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from ..models import Book
@@ -10,6 +11,7 @@ from ..serializers import BookResponseSerializer
 class ListBook(ListAPIView):
 
     serializer_class = BookResponseSerializer
+    pagination_class = PageNumberPagination
     queryset = Book.objects.all()
     filter_backends = [filters.SearchFilter, DjangoFilterBackend]
     filterset_fields = ["author", "genre", "publisher"]
