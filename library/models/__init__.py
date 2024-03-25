@@ -8,3 +8,5 @@ from .genre import Genre
 from .publisher import Publisher
 from .punishment import Punishment
 from .review import Review
+from .request import Request
+from .detail_request import DetailRequest
