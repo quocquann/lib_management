@@ -5,7 +5,6 @@ from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 from ..serializers import RequestSerializer, RequestResponseSerializer
 from ..models import Request, DetailRequest, Book
-from django.db.models import F
 
 class ListCreateRequest(APIView):
     

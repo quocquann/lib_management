@@ -21,5 +21,6 @@ urlpatterns = [
     path("authors/", views.ListAuthor.as_view()),
     path("genres/", views.ListGenre.as_view()),
     path("publishers/", views.ListPublisher.as_view()),
-    path("requests/", views.ListCreateRequest.as_view())
+    path("requests/", views.ListCreateRequest.as_view()),
+    path("borrows/", views.ListBorrow.as_view()),
 ]

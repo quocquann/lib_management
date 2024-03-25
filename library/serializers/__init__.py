@@ -3,3 +3,5 @@ from .author_serializer import AuthorResponseSerializer
 from .genre_serializer import GenreResposneSerialize
 from .publisher_serializer import PublisherResponseSerializer
 from .request_serializer import RequestSerializer, RequestResponseSerializer
+from .borrow_serializer import BorrowResponseSerializer
+from .user_serializer import UserResponseSerializer
