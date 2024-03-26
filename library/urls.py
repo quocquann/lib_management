@@ -14,8 +14,8 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger-ui",
     ),
-    path("auth/login", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("token/refresh", TokenRefreshView.as_view(), name="token_refresh"),
+    path("auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("books/", views.ListBook.as_view()),
     path("books/<int:pk>/", views.RetrieveBook.as_view()),
     path("authors/", views.ListAuthor.as_view()),
@@ -23,4 +23,6 @@ urlpatterns = [
     path("publishers/", views.ListPublisher.as_view()),
     path("requests/", views.ListCreateRequest.as_view()),
     path("borrows/", views.ListBorrow.as_view()),
+    path("user/", views.RetrieveUser.as_view()),
+    path("reviews/books/<int:pk>/", views.ListCreateReviewByBook.as_view())
 ]
