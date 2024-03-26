@@ -5,4 +5,4 @@ from .publisher_serializer import PublisherResponseSerializer
 from .request_serializer import RequestSerializer, RequestResponseSerializer
 from .borrow_serializer import BorrowResponseSerializer
 from .user_serializer import UserResponseSerializer
-from .review_serializer import ReviewResponseSerializer
+from .review_serializer import ReviewResponseSerializer, ReviewRequestSerializer
