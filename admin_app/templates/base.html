@@ -89,9 +89,23 @@
                         </li>
 
                         <li class="side-nav-item">
-                            <a href="apps-chat.html" class="side-nav-link">
+                            <a href={% url "requests"%} class="side-nav-link">
                                 <i class="uil-comments-alt"></i>
-                                <span> Chat </span>
+                                <span> Yêu cầu mượn </span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href={% url "borrows" %} class="side-nav-link">
+                                <i class="uil-comments-alt"></i>
+                                <span> Phiếu mượn </span>
+                            </a>
+                        </li>
+
+                        <li class="side-nav-item">
+                            <a href={% url "create-book"%} class="side-nav-link">
+                                <i class="uil-comments-alt"></i>
+                                <span> Thêm sách </span>
                             </a>
                         </li>
 

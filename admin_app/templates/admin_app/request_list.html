@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+    <link href={% static "css/vendor/dataTables.bootstrap4.css" %} rel="stylesheet" type="text/css" />
+    <link href={% static "css/vendor/responsive.bootstrap4.css" rel="stylesheet" %} type="text/css" />
+{% endblock %}
+
+{% block content %}
+    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+        <thead>
+            <tr>
+                <th>Ngày bắt đầu</th>
+                <th>Ngày kết thúc</th>
+                <th>Loại</th>
+                <th>Trạng thái</th>
+                <th>Nguyên nhân từ chối</th>
+                <th>Đọc giả</th>
+                <th>Phiếu mượn</th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            {% for req in request_list %}
+                <tr>
+                    <td>{{req.start_date}}</td>
+                    <td>{{req.end_date}}</td>
+                    <td>{{req.type}}</td>
+                    <td>{{req.status}}</td>
+                    <td>
+                        {% if req.reject_reason %}
+                            {{req.reject_reason}}
+                        {% endif %}
+                    </td>
+                    <td>{{req.user.email}}</td>
+                    <td>{{req.borrow.pk}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block script %}
+    <script src={% static "js/vendor/jquery.dataTables.min.js" %}></script>
+    <script src={% static "js/vendor/dataTables.bootstrap4.js" %}></script>
+    <script src={% static "js/vendor/dataTables.responsive.min.js" %}></script>
+    <script src={% static "js/vendor/responsive.bootstrap4.min.js" %}></script>
+{% endblock %}
