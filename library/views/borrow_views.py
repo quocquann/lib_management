@@ -18,7 +18,7 @@ class ListBorrow(APIView):
             copy_ids = DetailBorrow.objects.filter(borrow=borrow).values_list(
                 "copy", flat=True
             )
-            book_ids = BookCopy.objects.filter(pk__in=copy_ids)
+            book_ids = BookCopy.objects.filter(pk__in=copy_ids).values_list("book", flat=True)
             books = Book.objects.filter(pk__in=book_ids)
             borrow.books = books
         serializer = BorrowResponseSerializer(borrows, many=True)

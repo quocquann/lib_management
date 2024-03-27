@@ -16,7 +16,7 @@ class ListCreateReviewByBook(APIView):
     )
     def get(self, request, pk):
         book = get_object_or_404(Book, pk=pk)
-        reviews = Review.objects.filter(book=book)
+        reviews = Review.objects.filter(book=book).order_by('-pk')
         serializer = ReviewResponseSerializer(reviews, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

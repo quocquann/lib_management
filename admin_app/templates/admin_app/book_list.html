@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+    <link href={% static "css/vendor/dataTables.bootstrap4.css" %} rel="stylesheet" type="text/css" />
+    <link href={% static "css/vendor/responsive.bootstrap4.css" rel="stylesheet" %} type="text/css" />
+{% endblock %}
+
+{% block content %}
+    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+        <thead>
+            <tr>
+                <th>ISBN</th>
+                <th>Tiêu đề</th>
+                <th>Tác giả</th>
+                <th>Thể loại</th>
+                <th>NXB</th>
+                <th>Ảnh</th>
+            </tr>
+        </thead>
+
+
+        <tbody>
+            {% for book in book_list %}
+                <tr>
+                    <td>{{book.isbn}}</td>
+                    <td>{{book.title}}</td>
+                    <td>{{book.author.name}}</td>
+                    <td>{{book.genre.name}}</td>
+                    <td>{{book.publisher.name}}</td>
+                    <td>
+                        <img src={{book.image.url}} width='100' height='130'/>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block script %}
+    <script src={% static "js/vendor/jquery.dataTables.min.js" %}></script>
+    <script src={% static "js/vendor/dataTables.bootstrap4.js" %}></script>
+    <script src={% static "js/vendor/dataTables.responsive.min.js" %}></script>
+    <script src={% static "js/vendor/responsive.bootstrap4.min.js" %}></script>
+{% endblock %}
