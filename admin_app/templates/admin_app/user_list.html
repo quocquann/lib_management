@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+    <link href={% static "css/vendor/dataTables.bootstrap4.css" %} rel="stylesheet" type="text/css" />
+    <link href={% static "css/vendor/responsive.bootstrap4.css" rel="stylesheet" %} type="text/css" />
+{% endblock %}
+
+{% block content %}
+    <table id="basic-datatable" class="table dt-responsive nowrap w-100">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>User name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for user in user_list %}
+                <tr>
+                    <td>{{user.pk}}</td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.email}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block script %}
+    <script src={% static "js/vendor/jquery.dataTables.min.js" %}></script>
+    <script src={% static "js/vendor/dataTables.bootstrap4.js" %}></script>
+    <script src={% static "js/vendor/dataTables.responsive.min.js" %}></script>
+    <script src={% static "js/vendor/responsive.bootstrap4.min.js" %}></script>
+{% endblock %}

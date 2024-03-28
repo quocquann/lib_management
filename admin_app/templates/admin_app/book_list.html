@@ -10,12 +10,14 @@
     <table id="basic-datatable" class="table dt-responsive nowrap w-100">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>ISBN</th>
                 <th>Tiêu đề</th>
                 <th>Tác giả</th>
                 <th>Thể loại</th>
                 <th>NXB</th>
                 <th>Ảnh</th>
+                <th>Hành động</th>
             </tr>
         </thead>
 
@@ -23,6 +25,7 @@
         <tbody>
             {% for book in book_list %}
                 <tr>
+                    <td>{{book.pk}}</td>
                     <td>{{book.isbn}}</td>
                     <td>{{book.title}}</td>
                     <td>{{book.author.name}}</td>
@@ -31,10 +34,36 @@
                     <td>
                         <img src={{book.image.url}} width='100' height='130'/>
                     </td>
+                    <td class="table-action">
+                        <a href={% url "update-book" book.pk%} class="action-icon"> <i class="mdi mdi-pencil"></i></a>
+                        <a href="#" class="action-icon"> <i class="mdi mdi-delete"></i></a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+
+    <div class="pagination pagination-rounded">
+        {% if page_obj.has_previous %}
+            <span class="paginate_button page-item previous">
+                <a href="?page={{ page_obj.previous_page_number }}" aria-controls="datatable-buttons" class="page-link">
+                    <i class="mdi mdi-chevron-left"></i>
+                </a>
+            </span>
+        {% endif %}
+        {% for page in page_obj.paginator %}
+            <span class="paginate_button page-item {% if page.number == page_obj.number %} active {% endif %}">
+                <a href="?page={{ page.number }}" class="page-link">{{page.number}}</a>
+            </span>
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="paginate_button page-item next">
+                <a href="?page={{ page_obj.next_page_number }}" aria-controls="datatable-buttons" class="page-link">
+                    <i class="mdi mdi-chevron-right"></i>
+                </a>
+            </li>
+        {% endif %}
+    </div>
 {% endblock %}
 
 {% block script %}

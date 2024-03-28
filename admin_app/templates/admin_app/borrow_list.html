@@ -23,20 +23,27 @@
         <tbody>
             {% for borrow in borrow_list %}
                 <tr>
-                    <td>{{borow.pk}}</td>
-                    <td>{{borow.status}}</td>
-                    <td>{{borow.borrow_date}}</td>
-                    <td>{{borow.return_date}}</td>
+                    <td>{{borrow.pk}}</td>
                     <td>
-                        {% if borow.actual_return_date %}
-                            {{borow.actual_return_date}}
+                        {% if borrow.status == 'borrowed' %}
+                            <span class="badge badge-danger">{{borrow.status}}</span>
+                        {% else %}
+                            <span class="badge badge-success">{{borrow.status}}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>{{borrow.borrow_date}}</td>
+                    <td>{{borrow.return_date}}</td>
+                    <td>
+                        {% if borrow.actual_return_date %}
+                            {{borrow.actual_return_date}}
                         {% endif %}
                     </td>
                     <td>
-                        {% if borow.user.username %}
-                            {{borow.user.username}}
+                        {% if borrow.user.username %}
+                            {{borrow.user.username}}
                         {% else %}
-                            {{borow.user.email}}
+                            {{borrow.user.email}}
                         {% endif %}
                     </td>
                 </tr>

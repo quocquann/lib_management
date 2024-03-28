@@ -4,7 +4,8 @@
 
     <head>
         <meta charset="utf-8" />
-        <title>Hyper - Responsive Bootstrap 4 Admin Dashboard</title>
+        <title>Quản lý thư viện</title>
+        <link rel="icon" type="image/x-icon" href={% static "bookicon.ico"%}>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
         <meta content="Coderthemes" name="author" />
@@ -106,6 +107,13 @@
                             <a href={% url "create-book"%} class="side-nav-link">
                                 <i class="uil-comments-alt"></i>
                                 <span> Thêm sách </span>
+                            </a>
+                        </li>
+                        
+                        <li class="side-nav-item">
+                            <a href={% url "users"%} class="side-nav-link">
+                                <i class="uil-comments-alt"></i>
+                                <span> Đọc giả </span>
                             </a>
                         </li>
 
