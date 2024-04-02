@@ -6,5 +6,6 @@ class DetailRequest(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name="detail_requests")
     
-    
+    def __str__(self):
+        return "(" + str(self.pk) + ")" + self.book.title
     

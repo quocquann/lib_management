@@ -6,3 +6,6 @@ from .borrow import Borrow
 class DetailBorrow(models.Model):
     copy = models.ForeignKey(BookCopy, on_delete=models.CASCADE)
     borrow = models.ForeignKey(Borrow, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "(" + str(self.pk) + ")" + self.copy.book.title

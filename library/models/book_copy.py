@@ -8,3 +8,6 @@ class BookCopy(models.Model):
     condition = models.CharField(max_length=5000, null=True, blank=True)
 
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return "(" + str(self.pk) +")"+ self.book.title

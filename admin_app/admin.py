@@ -1,15 +1,16 @@
 from django.contrib import admin
 from library.models import Borrow, Book, Author, BookCopy, DetailBorrow, DetailRequest, Genre, Publisher, Punishment, Request, Review, User
+from rangefilter.filters import (
+    DateRangeFilterBuilder,
+)
 
 # Register your models here.
 
 admin.site.register(Author)
-admin.site.register(DetailBorrow)
 admin.site.register(DetailRequest)
 admin.site.register(Genre)
 admin.site.register(Publisher)
 admin.site.register(Punishment)
-admin.site.register(Request)
 admin.site.register(Review)
 admin.site.register(User)
 
@@ -18,6 +19,12 @@ class DetailBorrowInline(admin.TabularInline):
 
 class BookCopyInline(admin.TabularInline):
     model = BookCopy
+    
+class DetailRequestInline(admin.TabularInline):
+    model = DetailRequest
+    
+class PunishmentInline(admin.TabularInline):
+    model = Punishment
     
 @admin.register(Book)
 class BookAdminModel(admin.ModelAdmin):
@@ -39,5 +46,14 @@ class BookCopyAdminModel(admin.ModelAdmin):
 @admin.register(Borrow)
 class BorrowAdminModel(admin.ModelAdmin):
     list_display = ("borrow_date","return_date", "status", "actual_return_date", "user")
-    inlines = [DetailBorrowInline]
-    list_filter=("status",)
+    inlines = [DetailBorrowInline, PunishmentInline]
+    list_filter=("status", ("borrow_date", DateRangeFilterBuilder("Borrow date:")), ("return_date", DateRangeFilterBuilder("Return date:")))
+
+@admin.register(DetailBorrow) 
+class DetailBorrowAdminModel(admin.ModelAdmin):
+    list_display=("copy", "borrow")
+    list_filter = ("borrow",)
+    
+@admin.register(Request)
+class RequestAdminModel(admin.ModelAdmin):
+    inlines = [DetailRequestInline]
