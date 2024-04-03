@@ -3,6 +3,8 @@ from library.models import Borrow, Book, Author, BookCopy, DetailBorrow, DetailR
 from rangefilter.filters import (
     DateRangeFilterBuilder,
 )
+from datetime import date
+from library.utils.contants import BORROW_STATUS_BORROW
 
 # Register your models here.
 
@@ -45,9 +47,15 @@ class BookCopyAdminModel(admin.ModelAdmin):
 
 @admin.register(Borrow)
 class BorrowAdminModel(admin.ModelAdmin):
-    list_display = ("borrow_date","return_date", "status", "actual_return_date", "user")
+    list_display = ("borrow_date","return_date", "status", "actual_return_date", "user", "overdue")
     inlines = [DetailBorrowInline, PunishmentInline]
     list_filter=("status", ("borrow_date", DateRangeFilterBuilder("Borrow date:")), ("return_date", DateRangeFilterBuilder("Return date:")))
+    
+    def overdue(self, instance):
+        if ((instance.return_date < date.today()) or (instance.actual_return_date and instance.actual_return_date > instance.return_date)) and instance.status==BORROW_STATUS_BORROW:
+            return True
+        else:
+            return False
 
 @admin.register(DetailBorrow) 
 class DetailBorrowAdminModel(admin.ModelAdmin):

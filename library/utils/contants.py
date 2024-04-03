@@ -12,3 +12,5 @@ BORROW_STATUS = (
 )
 
 DEFAUL_BORROW_STATUS = "borrowed"
+BORROW_STATUS_BORROW = 'borrowed'
+BORROW_STATUS_RETURN = 'returned'
