@@ -48,8 +48,9 @@ INSTALLED_APPS = [
     "rangefilter",
     "django_filters",
     "drf_spectacular",
+    "import_export",
     "library",
-    "admin_app"
+    "admin_app",
 ]
 
 REST_FRAMEWORK = {
