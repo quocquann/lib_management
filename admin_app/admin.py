@@ -19,7 +19,7 @@ from rangefilter.filters import (
 )
 from datetime import date
 from library.utils.contants import BORROW_STATUS_BORROW
-from .resources import BookResource
+from .resources import BookResource, DetailBorrowResource
 
 # Register your models here.
 
@@ -119,9 +119,10 @@ class BorrowAdminModel(admin.ModelAdmin):
 
 
 @admin.register(DetailBorrow)
-class DetailBorrowAdminModel(admin.ModelAdmin):
+class DetailBorrowAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ("copy", "borrow")
     list_filter = ("borrow",)
+    resource_class=DetailBorrowResource
 
 
 @admin.register(Request)
