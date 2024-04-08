@@ -23,6 +23,10 @@ from .resources import BookResource
 
 # Register your models here.
 
+admin.site.site_header="Library management"
+admin.site.site_title="Library management"
+admin.site.index_title="Admin"
+
 admin.site.register(Author)
 admin.site.register(Genre)
 admin.site.register(Publisher)

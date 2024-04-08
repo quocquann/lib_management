@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from ..models import Review
+from django.db.models import Avg
 
 
 class BookResponseSerializer(serializers.Serializer):
@@ -10,9 +12,14 @@ class BookResponseSerializer(serializers.Serializer):
     author = serializers.CharField(max_length=500)
     genre = serializers.CharField(max_length=500)
     publisher = serializers.CharField(max_length=500)
+    rating = serializers.SerializerMethodField("get_rating")
 
     def get_id(self, instance):
         return instance.pk
+    
+    def get_rating(self, instance):
+        rating = Review.objects.filter(book=instance).aggregate(Avg("rating"))["rating__avg"]
+        return rating
     
     def to_representation(self, instance):
         data = super().to_representation(instance)
