@@ -1,4 +1,4 @@
-BOOK_COPY_STATUS = ((0, "Available"), (1, "Borrowed"))
+BOOK_COPY_STATUS = (("a", "Available"), ("b", "Borrowed"))
 
 REQUEST_STATUS = (("pending", "pending"), ('rejected', "rejected"), ("approved", "approved"))
 DEFAULT_REQUEST_STATUS = "pending"

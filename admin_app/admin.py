@@ -24,12 +24,11 @@ from .resources import BookResource
 # Register your models here.
 
 admin.site.register(Author)
-admin.site.register(DetailRequest)
 admin.site.register(Genre)
 admin.site.register(Publisher)
 admin.site.register(Punishment)
-admin.site.register(Review)
 admin.site.register(User)
+admin.site.register(DetailRequest)
 
 
 class DetailBorrowInline(admin.TabularInline):
@@ -58,6 +57,7 @@ class BookAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
         "author",
         "genre",
         "publisher",
+        "price",
         "total_borrow",
     )
     inlines = [BookCopyInline]
@@ -123,3 +123,8 @@ class DetailBorrowAdminModel(admin.ModelAdmin):
 @admin.register(Request)
 class RequestAdminModel(admin.ModelAdmin):
     inlines = [DetailRequestInline]
+
+
+@admin.register(Review)
+class ReviewAdminModel(admin.ModelAdmin):
+    list_display=("book", "user", "rating", "comment_text")
