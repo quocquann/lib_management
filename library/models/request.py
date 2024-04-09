@@ -13,4 +13,4 @@ class Request(models.Model):
     borrow = models.ForeignKey(Borrow, on_delete=models.CASCADE, null=True)
     
     def __str__(self):
-        return self.user.username + " - " + str(self.start_date) + " - " + str(self.end_date)
+        return str(self.pk)

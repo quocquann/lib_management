@@ -19,7 +19,8 @@ from rangefilter.filters import (
 )
 from datetime import date
 from library.utils.contants import BORROW_STATUS_BORROW
-from .resources import BookResource
+from .resources import BookResource, DetailBorrowResource
+from admin_auto_filters.filters import AutocompleteFilter
 
 # Register your models here.
 
@@ -27,13 +28,19 @@ admin.site.site_header="Library management"
 admin.site.site_title="Library management"
 admin.site.index_title="Admin"
 
-admin.site.register(Author)
-admin.site.register(Genre)
-admin.site.register(Publisher)
-admin.site.register(Punishment)
 admin.site.register(User)
-admin.site.register(DetailRequest)
 
+class AuthorFilter(AutocompleteFilter):
+    title='Author'
+    field_name="author"
+    
+class GenreFilter(AutocompleteFilter):
+    title='Genre'
+    field_name="genre"
+    
+class PublisherFilter(AutocompleteFilter):
+    title='Publisher'
+    field_name="publisher"
 
 class DetailBorrowInline(admin.TabularInline):
     model = DetailBorrow
@@ -51,6 +58,22 @@ class PunishmentInline(admin.TabularInline):
     model = Punishment
 
 
+@admin.register(Author)
+class AuthorAdminModel(admin.ModelAdmin):
+    list_display = ("pk", "name")
+    search_fields=["name"]
+
+@admin.register(Genre)
+class GenreAdminModel(admin.ModelAdmin):
+    list_display = ("pk", "name")
+    search_fields=["name"]
+    
+@admin.register(Publisher)
+class PublisherAdminModel(admin.ModelAdmin):
+    list_display = ("pk", "name")
+    search_fields=["name"]
+    
+    
 @admin.register(Book)
 class BookAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = (
@@ -65,7 +88,7 @@ class BookAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
         "total_borrow",
     )
     inlines = [BookCopyInline]
-    list_filter = ("author", "genre", "publisher")
+    list_filter = (AuthorFilter, GenreFilter, PublisherFilter)
     search_fields = (
         "pk",
         "isbn",
@@ -84,7 +107,7 @@ class BookAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
 
 @admin.register(BookCopy)
 class BookCopyAdminModel(admin.ModelAdmin):
-    list_display = ("status", "condition", "book")
+    list_display = ("pk", "status", "condition", "book")
     list_filter = ("status",)
 
 
@@ -119,16 +142,24 @@ class BorrowAdminModel(admin.ModelAdmin):
 
 
 @admin.register(DetailBorrow)
-class DetailBorrowAdminModel(admin.ModelAdmin):
-    list_display = ("copy", "borrow")
+class DetailBorrowAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
+    list_display = ("pk", "copy", "borrow")
     list_filter = ("borrow",)
 
 
 @admin.register(Request)
 class RequestAdminModel(admin.ModelAdmin):
+    list_display = ("pk", "status", "start_date", "end_date", "type", "reject_reason", "user", "borrow")
     inlines = [DetailRequestInline]
 
+@admin.register(DetailRequest)
+class DetailRequestAdminModel(admin.ModelAdmin):
+    list_display = ("pk", "book", "request")
 
 @admin.register(Review)
 class ReviewAdminModel(admin.ModelAdmin):
-    list_display=("book", "user", "rating", "comment_text")
+    list_display=("pk", "book", "user", "rating", "comment_text")
+    
+@admin.register(Punishment)
+class PunishmentAdminModel(admin.ModelAdmin):
+    list_display = ("pk", "reason", "fine", "borrow")

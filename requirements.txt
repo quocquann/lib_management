@@ -9,3 +9,4 @@ django-cors-headers ==4.3.1
 django-filter==24.1
 django-admin-rangefilter==0.12.1
 django-import-export==3.3.7
+django-admin-autocomplete-filter==0.7.1
