@@ -22,6 +22,7 @@ urlpatterns = [
     path("genres/", views.ListGenre.as_view()),
     path("publishers/", views.ListPublisher.as_view()),
     path("requests/", views.ListCreateRequest.as_view()),
+    path("requests/<int:pk>/", views.DeleteRequest.as_view()),
     path("borrows/", views.ListBorrow.as_view()),
     path("user/", views.RetrieveUser.as_view()),
     path("reviews/books/<int:pk>/", views.ListCreateReviewByBook.as_view())

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from import_export.admin import ImportExportModelAdmin
+from import_export.admin import ImportExportModelAdmin, ExportActionModelAdmin
 from library.models import (
     Borrow,
     Book,
@@ -19,8 +19,9 @@ from rangefilter.filters import (
 )
 from datetime import date
 from library.utils.contants import BORROW_STATUS_BORROW
-from .resources import BookResource, DetailBorrowResource
+from .resources import BookResource
 from admin_auto_filters.filters import AutocompleteFilter
+from django.contrib.auth.models import Group
 
 # Register your models here.
 
@@ -28,12 +29,12 @@ admin.site.site_header="Library management"
 admin.site.site_title="Library management"
 admin.site.index_title="Admin"
 
-admin.site.register(User)
+admin.site.unregister(Group)
 
 class AuthorFilter(AutocompleteFilter):
     title='Author'
     field_name="author"
-    
+
 class GenreFilter(AutocompleteFilter):
     title='Genre'
     field_name="genre"
@@ -44,10 +45,12 @@ class PublisherFilter(AutocompleteFilter):
 
 class DetailBorrowInline(admin.TabularInline):
     model = DetailBorrow
+    autocomplete_fields=["copy"]
 
 
 class BookCopyInline(admin.TabularInline):
     model = BookCopy
+    autocomplete_fields=['book']
 
 
 class DetailRequestInline(admin.TabularInline):
@@ -57,6 +60,10 @@ class DetailRequestInline(admin.TabularInline):
 class PunishmentInline(admin.TabularInline):
     model = Punishment
 
+@admin.register(User)
+class UserAdminModel(admin.ModelAdmin):
+    list_display = ("pk","username", "email", "is_staff")
+    search_fields=("pk", "username", "email")
 
 @admin.register(Author)
 class AuthorAdminModel(admin.ModelAdmin):
@@ -97,6 +104,7 @@ class BookAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
         "genre__name",
         "publisher__name",
     )
+    autocomplete_fields=('author', 'genre', 'publisher')
     list_per_page = 5
     resource_classes = [BookResource]
 
@@ -109,17 +117,19 @@ class BookAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
 class BookCopyAdminModel(admin.ModelAdmin):
     list_display = ("pk", "status", "condition", "book")
     list_filter = ("status",)
+    search_fields=('book__title','pk')
+    autocomplete_fields=("book",)
 
 
 @admin.register(Borrow)
-class BorrowAdminModel(admin.ModelAdmin):
+class BorrowAdminModel(ExportActionModelAdmin, admin.ModelAdmin):
     list_display = (
         "borrow_date",
         "return_date",
         "status",
         "actual_return_date",
         "user",
-        "overdue",
+        "is_overdue",
     )
     inlines = [DetailBorrowInline, PunishmentInline]
     list_filter = (
@@ -127,8 +137,10 @@ class BorrowAdminModel(admin.ModelAdmin):
         ("borrow_date", DateRangeFilterBuilder("Borrow date:")),
         ("return_date", DateRangeFilterBuilder("Return date:")),
     )
+    autocomplete_fields=("user",)
+    search_fields=("pk",)
 
-    def overdue(self, instance):
+    def is_overdue(self, instance):
         if (
             (instance.return_date < date.today())
             or (
@@ -145,21 +157,28 @@ class BorrowAdminModel(admin.ModelAdmin):
 class DetailBorrowAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ("pk", "copy", "borrow")
     list_filter = ("borrow",)
+    autocomplete_fields=("copy","borrow")
 
 
 @admin.register(Request)
 class RequestAdminModel(admin.ModelAdmin):
     list_display = ("pk", "status", "start_date", "end_date", "type", "reject_reason", "user", "borrow")
     inlines = [DetailRequestInline]
+    search_fields=("pk",)
+    autocomplete_fields=("user", "borrow")
+    
 
 @admin.register(DetailRequest)
 class DetailRequestAdminModel(admin.ModelAdmin):
     list_display = ("pk", "book", "request")
+    autocomplete_fields=("book", "request")
 
 @admin.register(Review)
 class ReviewAdminModel(admin.ModelAdmin):
     list_display=("pk", "book", "user", "rating", "comment_text")
+    autocomplete_fields=("user", "book")
     
 @admin.register(Punishment)
 class PunishmentAdminModel(admin.ModelAdmin):
     list_display = ("pk", "reason", "fine", "borrow")
+    autocomplete_fields=("borrow",)

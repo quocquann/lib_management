@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 from ..serializers import RequestSerializer, RequestResponseSerializer
 from ..models import Request, DetailRequest, Book
+from django.shortcuts import get_object_or_404
 
 class ListCreateRequest(APIView):
     
@@ -33,3 +34,20 @@ class ListCreateRequest(APIView):
             req.books = books
         serializer = RequestResponseSerializer(requests, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+class DeleteRequest(APIView):
+    
+    @extend_schema()
+    def delete(self, request, pk):
+        request = get_object_or_404(Request, pk=pk)
+        if request.status == 'pending':
+            request.delete()
+            return Response({
+                "message": "delete successfully"
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                "message": "can not delete this request"
+            }, status=status.HTTP_400_BAD_REQUEST)
+            
