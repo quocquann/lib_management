@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from ..models import Review
+from ..models import Review, BookCopy
 from django.db.models import Avg
+from ..utils.contants import BOOK_COPY_STATUS_AVAILABLE
 
 
 class BookResponseSerializer(serializers.Serializer):
@@ -13,6 +14,7 @@ class BookResponseSerializer(serializers.Serializer):
     genre = serializers.CharField(max_length=500)
     publisher = serializers.CharField(max_length=500)
     rating = serializers.SerializerMethodField("get_rating")
+    available = serializers.SerializerMethodField("get_available")
 
     def get_id(self, instance):
         return instance.pk
@@ -20,6 +22,10 @@ class BookResponseSerializer(serializers.Serializer):
     def get_rating(self, instance):
         rating = Review.objects.filter(book=instance).aggregate(Avg("rating"))["rating__avg"]
         return rating
+    
+    def get_available(self, instance):
+        available = BookCopy.objects.filter(book=instance, status=BOOK_COPY_STATUS_AVAILABLE).count()
+        return available
     
     def to_representation(self, instance):
         data = super().to_representation(instance)
