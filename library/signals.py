@@ -39,3 +39,10 @@ def send_email_to_user(sender, instance, **kwarg):
             [instance.user.email],
             fail_silently=False,
         )
+        
+@receiver(post_save, sender=Request)
+def renew_borrow(sender, instance, **kwarg):
+    if instance.type == "renew":
+        borrow = instance.borrow
+        borrow.return_date = instance.end_date
+        borrow.save()

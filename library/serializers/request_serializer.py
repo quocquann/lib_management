@@ -9,6 +9,7 @@ class RequestSerializer(serializers.Serializer):
     start_date = serializers.DateField()
     end_date = serializers.DateField()
     type = serializers.CharField()
+    borrow_id = serializers.IntegerField()
     
     def validate_start_date(self, value):
         if value < datetime.date.today():
@@ -39,4 +40,4 @@ class RequestResponseSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Request
-        fields = ['id', 'start_date', 'end_date', 'status', 'type', 'reject_reason', 'books']
+        fields = ['id', 'start_date', 'end_date', 'status', 'type', 'reject_reason', 'books', 'borrow']

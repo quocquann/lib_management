@@ -14,10 +14,10 @@ class ListCreateRequest(APIView):
     @extend_schema(
         request=RequestSerializer
     )
-    def post(self, request):
+    def post(self, request):    
         serializer = RequestSerializer(data=request.data, context={
             'user': request.user
-        })
+        }, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -27,7 +27,7 @@ class ListCreateRequest(APIView):
         responses=RequestResponseSerializer
     )
     def get(self, request):
-        requests = Request.objects.filter(user=request.user)
+        requests = Request.objects.filter(user=request.user).order_by("-pk")
         for req in requests:
             book_ids = DetailRequest.objects.filter(request=req).values_list('book', flat=True)
             books = Book.objects.filter(pk__in=book_ids)
@@ -38,14 +38,15 @@ class ListCreateRequest(APIView):
     
 class DeleteRequest(APIView):
     
-    @extend_schema()
+    @extend_schema(
+        responses=RequestResponseSerializer
+    )
     def delete(self, request, pk):
         request = get_object_or_404(Request, pk=pk)
         if request.status == 'pending':
+            id = request.pk
             request.delete()
-            return Response({
-                "message": "delete successfully"
-            }, status=status.HTTP_200_OK)
+            return Response({"id" : id}, status=status.HTTP_200_OK)
         else:
             return Response({
                 "message": "can not delete this request"
