@@ -33,11 +33,3 @@ class BookResponseSerializer(serializers.Serializer):
         data['genre'] = instance.genre.name
         data['publisher'] = instance.publisher.name
         return data
-
-
-
-class BookRequestSerilizer(serializers.Serializer):
-    isbn = serializers.CharField(max_length=15)
-    title = serializers.CharField(max_length=5000)
-    image = serializers.ImageField()
-    # TODO: dosth

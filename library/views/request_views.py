@@ -6,6 +6,7 @@ from drf_spectacular.utils import extend_schema
 from ..serializers import RequestSerializer, RequestResponseSerializer
 from ..models import Request, DetailRequest, Book
 from django.shortcuts import get_object_or_404
+from ..permissions import CanDeleteRequest
 
 class ListCreateRequest(APIView):
     
@@ -37,6 +38,8 @@ class ListCreateRequest(APIView):
     
     
 class DeleteRequest(APIView):
+    
+    permission_classes = [IsAuthenticated, CanDeleteRequest]
     
     @extend_schema(
         responses=RequestResponseSerializer

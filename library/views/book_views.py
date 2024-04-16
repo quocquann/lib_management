@@ -13,9 +13,10 @@ class ListBook(ListAPIView):
     serializer_class = BookResponseSerializer
     pagination_class = PageNumberPagination
     queryset = Book.objects.all()
-    filter_backends = [filters.SearchFilter, DjangoFilterBackend]
+    filter_backends = [filters.SearchFilter, DjangoFilterBackend, filters.OrderingFilter]
     filterset_fields = ["author", "genre", "publisher"]
     search_fields = ["title", "author__name", "genre__name", "publisher__name"]
+    ordering_fields = ["pk", "title"]
 
     @extend_schema(
         responses=BookResponseSerializer,

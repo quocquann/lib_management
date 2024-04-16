@@ -1,18 +1,23 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from .models import Borrow, DetailBorrow, BookCopy, Request
-from .utils.contants import BOOK_COPY_STATUS_BORROWED, BORROW_STATUS_BORROW
+from .utils.contants import BOOK_COPY_STATUS_BORROWED, BOOK_COPY_STATUS_AVAILABLE, BORROW_STATUS_BORROW, BORROW_STATUS_RETURN
 from django.core.mail import send_mail
 from lib_management.settings import EMAIL_HOST_USER
 
 @receiver(post_save, sender=Borrow)
-def set_book_copy_to_borrow_status(sender, instance, **kwarg):
+def set_book_copy_status_after_save_borrow(sender, instance, **kwarg):
+    copy_ids = DetailBorrow.objects.filter(borrow=instance).values_list("copy", flat=True)
+    copies = BookCopy.objects.filter(pk__in=copy_ids)
     if instance.status == BORROW_STATUS_BORROW:
-        copy_ids = DetailBorrow.objects.filter(borrow=instance).values_list("copy", flat=True)
-        copies = BookCopy.objects.filter(pk__in=copy_ids)
         for copy in copies:
             copy.status = BOOK_COPY_STATUS_BORROWED
             copy.save()
+    if instance.status == BORROW_STATUS_RETURN:
+        for copy in copies:
+            copy.status = BOOK_COPY_STATUS_AVAILABLE
+            copy.save()
+        
             
 
 @receiver(post_save, sender=Request)
@@ -46,3 +51,4 @@ def renew_borrow(sender, instance, **kwarg):
         borrow = instance.borrow
         borrow.return_date = instance.end_date
         borrow.save()
+        

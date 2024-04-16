@@ -42,6 +42,18 @@ class GenreFilter(AutocompleteFilter):
 class PublisherFilter(AutocompleteFilter):
     title='Publisher'
     field_name="publisher"
+    
+class BorrowFilter(AutocompleteFilter):
+    title='borrow'
+    field_name='borrow'
+
+class RequestFilter(AutocompleteFilter):
+    title="request"
+    field_name="request"
+
+class UserFilter(AutocompleteFilter):
+    title="user"
+    field_name="user"
 
 class DetailBorrowInline(admin.TabularInline):
     model = DetailBorrow
@@ -124,6 +136,7 @@ class BookCopyAdminModel(admin.ModelAdmin):
 @admin.register(Borrow)
 class BorrowAdminModel(ExportActionModelAdmin, admin.ModelAdmin):
     list_display = (
+        "pk",
         "borrow_date",
         "return_date",
         "status",
@@ -136,6 +149,7 @@ class BorrowAdminModel(ExportActionModelAdmin, admin.ModelAdmin):
         "status",
         ("borrow_date", DateRangeFilterBuilder("Borrow date:")),
         ("return_date", DateRangeFilterBuilder("Return date:")),
+        UserFilter
     )
     autocomplete_fields=("user",)
     search_fields=("pk",)
@@ -151,13 +165,13 @@ class BorrowAdminModel(ExportActionModelAdmin, admin.ModelAdmin):
             return True
         else:
             return False
-
+        
 
 @admin.register(DetailBorrow)
 class DetailBorrowAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = ("pk", "copy", "borrow")
-    list_filter = ("borrow",)
-    autocomplete_fields=("copy","borrow")
+    list_filter = (BorrowFilter,)
+    autocomplete_fields=("copy", "borrow")
 
 
 @admin.register(Request)
@@ -165,13 +179,20 @@ class RequestAdminModel(admin.ModelAdmin):
     list_display = ("pk", "status", "start_date", "end_date", "type", "reject_reason", "user", "borrow")
     inlines = [DetailRequestInline]
     search_fields=("pk",)
+    list_filter=(
+        'status', 
+        'type', 
+        ("start_date", DateRangeFilterBuilder("Start date:")),
+        ("end_date", DateRangeFilterBuilder("End date:")), 
+        UserFilter
+    )
     autocomplete_fields=("user", "borrow")
-    
 
 @admin.register(DetailRequest)
 class DetailRequestAdminModel(admin.ModelAdmin):
     list_display = ("pk", "book", "request")
     autocomplete_fields=("book", "request")
+    list_filter=(RequestFilter,)
 
 @admin.register(Review)
 class ReviewAdminModel(admin.ModelAdmin):

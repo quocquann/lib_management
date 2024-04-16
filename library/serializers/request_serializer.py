@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 import datetime
-from ..models import Request, DetailRequest, Book
+from ..models import Request, DetailRequest, Book, BookCopy
 from ..serializers import BookResponseSerializer
 
 class RequestSerializer(serializers.Serializer):
@@ -20,6 +20,13 @@ class RequestSerializer(serializers.Serializer):
         if value < datetime.date.today():
             raise ValidationError("Invalid date - end date in past")
         return value
+    
+    def validate_book_ids(self, value):
+        for id in value:
+            book = Book.objects.get(pk=id)
+            available = BookCopy.objects.filter(book=book).count()
+            if available <= 0:
+                raise ValidationError("Invalid book - book is not available")
                
     def create(self, validated_data):
         book_ids = validated_data.pop('book_ids', [])
