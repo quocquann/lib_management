@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "import_export",
     "library",
     "admin_app",
+    "django_crontab"
 ]
 
 REST_FRAMEWORK = {
@@ -141,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 USE_I18N = True
 
@@ -212,3 +213,7 @@ EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = False
 EMAIL_USE_SSL = True
+
+CRONJOBS = [
+    ("*/1 * * * *", "library.cron.get_relate_book")
+]
