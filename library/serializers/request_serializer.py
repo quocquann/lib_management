@@ -11,6 +11,11 @@ class RequestSerializer(serializers.Serializer):
     type = serializers.CharField()
     borrow_id = serializers.IntegerField()
     
+    def validate_book_ids(self, value):
+        if len(value) > 3:
+            raise ValidationError("Invalid books - cannot borrow more than 3 books")
+        return value
+    
     def validate_start_date(self, value):
         if value < datetime.date.today():
             raise ValidationError("Invalid date - start date in past")

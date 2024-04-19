@@ -217,3 +217,11 @@ EMAIL_USE_SSL = True
 CRONJOBS = [
     ("*/1 * * * *", "library.cron.get_relate_book")
 ]
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.db.DatabaseCache",
+        "LOCATION": "cache",
+        "TIMEOUT": None
+    }
+}
