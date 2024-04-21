@@ -15,7 +15,7 @@ class ListBorrow(APIView):
 
     @extend_schema(responses=BorrowResponseSerializer)
     def get(self, request):
-        borrows = Borrow.objects.filter(user=request.user)
+        borrows = Borrow.objects.filter(user=request.user).order_by("-pk")
         for borrow in borrows:
             copy_ids = DetailBorrow.objects.filter(borrow=borrow).values_list(
                 "copy", flat=True

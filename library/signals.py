@@ -17,13 +17,12 @@ def set_book_copy_status_after_save_borrow(sender, instance, **kwarg):
         for copy in copies:
             copy.status = BOOK_COPY_STATUS_AVAILABLE
             copy.save()
-        
-            
+
 
 @receiver(post_save, sender=Request)
 def send_email_to_user(sender, instance, **kwarg):
     from_email = EMAIL_HOST_USER
-    
+
     if instance.status == 'approved':
         subject = "Chấp nhận yêu cầu mượn sách"
         msg = "Thư viện xin thông báo yêu cầu mượn sách(Mã phiếu: " + str(instance.pk) + ") từ ngày " + str(instance.start_date) + " đã được chấp nhận."
@@ -44,11 +43,10 @@ def send_email_to_user(sender, instance, **kwarg):
             [instance.user.email],
             fail_silently=False,
         )
-        
+
 @receiver(post_save, sender=Request)
 def renew_borrow(sender, instance, **kwarg):
-    if instance.type == "renew":
+    if instance.type == "renew" and instance.status == "approved":
         borrow = instance.borrow
         borrow.return_date = instance.end_date
         borrow.save()
-        

@@ -22,7 +22,7 @@ def get_relate_book():
         blist = BookCopy.objects.filter(pk__in=copy_ids).values_list("book", flat=True)
         if len(blist) > 0:
             borrow_list.append(blist)
-            
+
     te = TransactionEncoder()
     te_ary = te.fit(borrow_list).transform(borrow_list)
     new_df = pd.DataFrame(te_ary, columns=te.columns_)
@@ -31,8 +31,14 @@ def get_relate_book():
     MIN_CONF = float(os.environ.get("MIN_CONF"))
     frequent_itemsets = apriori(new_df, min_support=MIN_SUP, use_colnames=True)
     rules = association_rules(frequent_itemsets, min_threshold=MIN_CONF).sort_values('confidence', ascending=False)
-    
+
     cache.set("association_rules", rules)
+
+
+def get_cache():
+    rules = cache.get("association_rules")
+    print(rules)
+
 
 if __name__ == '__main__':
     get_relate_book()

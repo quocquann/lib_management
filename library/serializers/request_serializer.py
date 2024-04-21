@@ -10,39 +10,40 @@ class RequestSerializer(serializers.Serializer):
     end_date = serializers.DateField()
     type = serializers.CharField()
     borrow_id = serializers.IntegerField()
-    
+
     def validate_book_ids(self, value):
         if len(value) > 3:
             raise ValidationError("Invalid books - cannot borrow more than 3 books")
         return value
-    
+
     def validate_start_date(self, value):
         if value < datetime.date.today():
             raise ValidationError("Invalid date - start date in past")
         return value
-    
+
     def validate_end_date(self, value):
         if value < datetime.date.today():
             raise ValidationError("Invalid date - end date in past")
         return value
-    
+
     def validate_book_ids(self, value):
         for id in value:
             book = Book.objects.get(pk=id)
             available = BookCopy.objects.filter(book=book).count()
             if available <= 0:
                 raise ValidationError("Invalid book - book is not available")
-               
+        return value
+
     def create(self, validated_data):
         book_ids = validated_data.pop('book_ids', [])
         user = self.context.get('user')
-        
+
         request = Request.objects.create(**validated_data, user=user)  
 
         for book_id in book_ids:
             book = Book.objects.get(id=book_id)
             DetailRequest.objects.create(book=book, request=request)
-        
+
         request.book_ids = book_ids
         return request
 

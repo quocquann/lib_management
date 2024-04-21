@@ -38,11 +38,11 @@ class AuthorFilter(AutocompleteFilter):
 class GenreFilter(AutocompleteFilter):
     title='Genre'
     field_name="genre"
-    
+
 class PublisherFilter(AutocompleteFilter):
     title='Publisher'
     field_name="publisher"
-    
+
 class BorrowFilter(AutocompleteFilter):
     title='borrow'
     field_name='borrow'
@@ -86,13 +86,13 @@ class AuthorAdminModel(admin.ModelAdmin):
 class GenreAdminModel(admin.ModelAdmin):
     list_display = ("pk", "name")
     search_fields=["name"]
-    
+
 @admin.register(Publisher)
 class PublisherAdminModel(admin.ModelAdmin):
     list_display = ("pk", "name")
     search_fields=["name"]
-    
-    
+
+
 @admin.register(Book)
 class BookAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
     list_display = (
@@ -165,7 +165,7 @@ class BorrowAdminModel(ExportActionModelAdmin, admin.ModelAdmin):
             return True
         else:
             return False
-        
+
 
 @admin.register(DetailBorrow)
 class DetailBorrowAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
@@ -198,7 +198,7 @@ class DetailRequestAdminModel(admin.ModelAdmin):
 class ReviewAdminModel(admin.ModelAdmin):
     list_display=("pk", "book", "user", "rating", "comment_text")
     autocomplete_fields=("user", "book")
-    
+
 @admin.register(Punishment)
 class PunishmentAdminModel(admin.ModelAdmin):
     list_display = ("pk", "reason", "fine", "borrow")
