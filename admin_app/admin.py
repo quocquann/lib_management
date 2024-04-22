@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from import_export.admin import ImportExportModelAdmin, ExportActionModelAdmin
 from library.models import (
     Borrow,
@@ -18,10 +20,12 @@ from rangefilter.filters import (
     DateRangeFilterBuilder,
 )
 from datetime import date
-from library.utils.contants import BORROW_STATUS_BORROW
+from library.utils.contants import BORROW_STATUS_BORROW, BORROW_STATUS_RETURN
 from .resources import BookResource
 from admin_auto_filters.filters import AutocompleteFilter
 from django.contrib.auth.models import Group
+from django.contrib.admin import SimpleListFilter
+from django.db.models import Q, F
 
 # Register your models here.
 
@@ -54,6 +58,26 @@ class RequestFilter(AutocompleteFilter):
 class UserFilter(AutocompleteFilter):
     title="user"
     field_name="user"
+    
+class IsOverdueListFilter(SimpleListFilter):
+    title="Over due"
+    parameter_name="is_overdue"
+    
+    def lookups(self, request, model_admin):
+        return [
+            (True, "True"),
+            (False, "False")
+        ]
+    
+    def queryset(self, request, queryset):
+        if self.value() == "True":
+            return queryset.filter((Q(return_date__lt=date.today()) & Q(status=BORROW_STATUS_BORROW)) | (~Q(actual_return_date=None) & Q(actual_return_date__gt=F("return_date"))))
+        elif self.value() == "False":
+            return queryset.filter((Q(return_date__gte=date.today()) & Q(status=BORROW_STATUS_RETURN)) | (~Q(actual_return_date=None) & Q(actual_return_date__lte=F("return_date"))))
+        else:
+            return queryset
+            
+            
 
 class DetailBorrowInline(admin.TabularInline):
     model = DetailBorrow
@@ -123,6 +147,16 @@ class BookAdminModel(ImportExportModelAdmin, admin.ModelAdmin):
     def total_borrow(self, instance):
         copys = BookCopy.objects.filter(book=instance)
         return DetailBorrow.objects.filter(copy__in=copys).count()
+    
+    # @admin.action(description="Generate PDF")
+    # def generate_pdf(modeladmin, request, queryset):
+    #     pks = ','.join(str(obj.pk) for obj in queryset)
+    #     url = reverse('admin:admin_app_generate_pdf') + f'?pks={pks}'
+    #     return HttpResponseRedirect(url)
+    
+    # action = [generate_pdf]
+    
+    # change_form_template="admin/admin_app/book/change_form.html"
 
 
 @admin.register(BookCopy)
@@ -149,19 +183,17 @@ class BorrowAdminModel(ExportActionModelAdmin, admin.ModelAdmin):
         "status",
         ("borrow_date", DateRangeFilterBuilder("Borrow date:")),
         ("return_date", DateRangeFilterBuilder("Return date:")),
-        UserFilter
+        UserFilter,
+        IsOverdueListFilter
     )
     autocomplete_fields=("user",)
     search_fields=("pk",)
 
     def is_overdue(self, instance):
-        if (
-            (instance.return_date < date.today())
-            or (
+        if (instance.return_date < date.today() and instance.status == BORROW_STATUS_BORROW) or (
                 instance.actual_return_date
                 and instance.actual_return_date > instance.return_date
-            )
-        ) and instance.status == BORROW_STATUS_BORROW:
+            ):
             return True
         else:
             return False
