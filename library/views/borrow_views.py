@@ -1,15 +1,11 @@
 from datetime import date
-from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView
-from rest_framework.response import Response
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from drf_spectacular.utils import extend_schema
 from ..serializers import BorrowResponseSerializer
 from ..models import Borrow, BookCopy, DetailBorrow, Book
 from ..utils.contants import BORROW_STATUS_BORROW
 from rest_framework.pagination import PageNumberPagination
-from django_filters.rest_framework import DjangoFilterBackend
 
 
 class ListBorrow(ListAPIView):
@@ -18,6 +14,7 @@ class ListBorrow(ListAPIView):
     pagination_class = PageNumberPagination
     queryset = Borrow.objects.all()
     serializer_class=BorrowResponseSerializer
+    
 
     @extend_schema(responses=BorrowResponseSerializer)
     def get(self, request):
@@ -34,4 +31,5 @@ class ListBorrow(ListAPIView):
             else:
                 borrow.overdue= False
         serializer = BorrowResponseSerializer(borrows, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        self.pagination_class.page_size = 5
+        return self.paginator.get_paginated_response(serializer.data)

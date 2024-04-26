@@ -32,6 +32,7 @@ class ListBook(ListAPIView):
         ],
     )
     def get(self, request):
+        self.paginator.page_size = 20
         return super().get(self, request)
 
 
