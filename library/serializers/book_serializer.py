@@ -33,3 +33,6 @@ class BookResponseSerializer(serializers.Serializer):
         data['genre'] = instance.genre.name
         data['publisher'] = instance.publisher.name
         return data
+
+class MostBorrowBookSerializer(BookResponseSerializer):
+    borrowCount = serializers.IntegerField()

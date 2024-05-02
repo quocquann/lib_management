@@ -19,6 +19,7 @@ urlpatterns = [
     path("books/", views.ListBook.as_view()),
     path("books/<int:pk>/", views.RetrieveBook.as_view()),
     path("books/relate-book/<int:pk>", views.ListRelateBook.as_view()),
+    path("books/most-borrow/", views.ListMostBorrowBook.as_view()),
     path("authors/", views.ListAuthor.as_view()),
     path("genres/", views.ListGenre.as_view()),
     path("publishers/", views.ListPublisher.as_view()),

@@ -10,4 +10,4 @@ class BookCopy(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     
     def __str__(self):
-        return "(" + str(self.pk) +")"+ self.book.title
+        return "(" + str(self.pk) + ")" + self.book.title + "(" + self.status + ")"

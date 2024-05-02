@@ -9,8 +9,9 @@ from django.shortcuts import get_object_or_404
 from django.core.cache import cache
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from ..models import Book, BookCopy
-from ..serializers import BookResponseSerializer
+from ..models import Book, BookCopy, DetailBorrow
+from ..serializers import BookResponseSerializer, MostBorrowBookSerializer
+from django.db.models import Count
 
 
 class ListBook(ListAPIView):
@@ -46,6 +47,25 @@ class RetrieveBook(RetrieveAPIView):
     )
     def get(self, request, pk):
         return super().get(self, request, pk)
+    
+class ListMostBorrowBook(ListAPIView):
+    
+    serializer_class = [BookResponseSerializer]
+    queryset = Book.objects.all()
+    
+    @extend_schema(
+        responses=BookResponseSerializer
+    )
+    def get(self, request):
+        mostBorrowBookIds = DetailBorrow.objects.values("copy__book").annotate(count=Count("copy__book")).order_by("-count")[:5]
+        books = []
+        for b in mostBorrowBookIds:
+            book = Book.objects.get(pk=b['copy__book'])
+            book.borrowCount = b['count']
+            books.append(book)
+        serializer = MostBorrowBookSerializer(books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
 
 class ListRelateBook(APIView):
     
