@@ -25,7 +25,7 @@ def send_email_to_user(sender, instance, **kwarg):
 
     if instance.status == 'approved':
         subject = "Chấp nhận yêu cầu mượn sách"
-        msg = "Thư viện xin thông báo yêu cầu mượn sách(Mã phiếu: " + str(instance.pk) + ") từ ngày " + str(instance.start_date) + " đã được chấp nhận."
+        msg = "Thư viện xin thông báo yêu cầu mượn sách(Mã: " + str(instance.pk) + ") từ ngày " + str(instance.start_date) + " đã được chấp nhận."
         send_mail(
             subject,
             msg,
@@ -35,7 +35,7 @@ def send_email_to_user(sender, instance, **kwarg):
         )
     elif instance.status == 'rejected':
         subject = "Từ chối yêu cầu mượn sách"
-        msg = "Thư viện xin thông báo yêu cầu mượn sách(Mã phiếu: " + str(instance.pk) + ") từ ngày " + str(instance.start_date) + " đã bị từ chối với lý do:\n " + str(instance.reject_reason)
+        msg = "Thư viện xin thông báo yêu cầu mượn sách(Mã: " + str(instance.pk) + ") từ ngày " + str(instance.start_date) + " đã bị từ chối với lý do:\n " + str(instance.reject_reason)
         send_mail(
             subject,
             msg,

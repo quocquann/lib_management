@@ -26,7 +26,7 @@ class ListBorrow(ListAPIView):
             book_ids = BookCopy.objects.filter(pk__in=copy_ids).values_list("book", flat=True)
             books = Book.objects.filter(pk__in=book_ids)
             borrow.books = books
-            if ((borrow.return_date < date.today()) or (borrow.actual_return_date and borrow.actual_return_date > borrow.return_date)) and borrow.status==BORROW_STATUS_BORROW:
+            if (borrow.return_date < date.today() and borrow.status==BORROW_STATUS_BORROW) or (borrow.actual_return_date and borrow.actual_return_date > borrow.return_date):
                 borrow.overdue = True
             else:
                 borrow.overdue= False
