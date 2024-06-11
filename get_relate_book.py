@@ -37,7 +37,7 @@ def get_relate_book():
 
 def get_cache():
     rules = cache.get("association_rules")
-    print(rules)
+    print(rules.head(20))
 
 
 if __name__ == '__main__':
